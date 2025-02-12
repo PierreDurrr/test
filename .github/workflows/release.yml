@@ -8,18 +8,10 @@ on:
         type: boolean
         required: true
         default: false
-
-  pull_request_target:
-    types:
-      - closed
-    branches:
-      - main
-    paths-ignore:
-      - '**.md'
-      - '**.png'
-  # push:
-  #   branches:
-  #     - main
+        
+   push:
+     branches:
+       - master
   #   paths-ignore:
   #     - '**.md'
 
