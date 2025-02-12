@@ -1,0 +1,17 @@
+config:
+  target: "http://0.0.0.0:80"
+  phases:
+    - duration: 2000
+      arrivalRate: 2
+  ensure:
+    p99: 300
+    maxErrorRate: 1
+
+scenarios:
+  - flow:
+    - loop:
+      - get:
+          url: "/video/:/transcode/universal/session/qanh4vo5uszbspg7xjlie84b/0/10.m4s"
+      # count: 100
+
+#http://0.0.0.0:80/video/:/transcode/universal/session/qanh4vo5uszbspg7xjlie84b/0/10.m4s"
