@@ -242,23 +242,29 @@ impl Filter for HubRestrictionsFilter {
         let config: Config = Config::figment().extract().unwrap();
         
         if !config.hub_restrictions {
-            return false;
-        }
-
-        if item.is_hub() && !item.is_collection_hub() {
-            return false;
-        }
-        
-        if !item.is_hub() {
-            return false;
-        }
-        
-        if !item.size.unwrap() == 0 {
             return true;
         }
 
+        if item.is_hub() && !item.is_collection_hub() {
+            return true;
+        }
+        
+        if !item.is_hub() {
+            return true;
+        }
+        
+        if !item.size.unwrap() == 0 {
+            return false;
+        }
+
         let section_id: i64 = item.library_section_id.unwrap_or_else(|| {
-            item.hub_identifier.clone().unwrap().split('.').collect::<Vec<&str>>()[2].parse().unwrap()
+            item.clone()
+                .children()
+                .get(0)
+                .unwrap()
+                .library_section_id
+                .expect("Missing Library section id")
+//            item.hub_identifier.clone().unwrap().split('.').collect::<Vec<&str>>()[2].parse().unwrap()
         });
 
         //let start = Instant::now();
@@ -279,7 +285,7 @@ impl Filter for HubRestrictionsFilter {
             .map(|c| c.rating_key.clone().unwrap())
             .collect();
 
-        !custom_collections_ids.contains(
+        custom_collections_ids.contains(
             &item
                 .hub_identifier
                 .clone()
@@ -978,9 +984,9 @@ impl Transform for HubKeyTransform {
                 item.style
                     .clone()
                     .unwrap_or(Style::Shelf.to_string().to_lowercase()),
-                old_key
+                item.key.clone().unwrap()
             ));
-            tracing::debug!(old_key = old_key, key = &item.key, "Replacing hub key");
+//            tracing::debug!(old_key = old_key, key = &item.key, "Replacing hub key");
         }
 
     }
