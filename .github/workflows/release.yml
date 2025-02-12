@@ -1,8 +1,37 @@
 name: Release
 
+on:
+  workflow_dispatch:
+    inputs:
+      test_build:
+        description: 'Create test builds'
+        type: boolean
+        required: true
+        default: false
+
+  pull_request_target:
+    types:
+      - closed
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '**.png'
+  # push:
+  #   branches:
+  #     - main
+  #   paths-ignore:
+  #     - '**.md'
 
 env:
   REGISTRY_IMAGE: ghcr.io/pierredurrr/test
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release 
 
 jobs:
 #  get-next-version:
